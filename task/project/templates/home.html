@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        *{
+            background-color: black;
+        }
+        h1,h2{
+            text-align: center;
+            color: white;
+        }
+    .top-left{
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 10%;
+        width: 5%;
+    }    
+     
+    </style>
+    <!-- <link rel="stylesheet" href="{% static 'css/register.css' %}"> -->
+    <title>Home</title>
+</head>
+<body>
+    <h1>Hi {{user.first_name}} {{user.last_name}}</h1>
+    <h2>welcome to Homepage</h2>
+    <img src="{% static 'images/AW8cijMwrP_logo.png' %}" class="top-left" alt="image">
+</body>
+</html>
