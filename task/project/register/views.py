@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework import serializers,status
 from django.shortcuts import get_object_or_404,redirect
 from .serializers import *
+from django.db import IntegrityError
 import json
 
 # Create your views here.
@@ -21,7 +22,6 @@ def display(request):
         pn = request.POST.get('phone_number')
         pwd = request.POST.get('password')
         gen = request.POST.get('gender')
-
         a = Register.objects.create(first_name = fn,last_name = ln,user_name =un,email = em,phone_number = pn,password = pwd,gender = gen)
         return render(request,'registeration.html')
     else:
@@ -60,16 +60,19 @@ def login_logout(request):
 # c-create  [post]
 class register_api(APIView):
     def post(self,request):
-        fn = request.data.get('first_name')
-        ln = request.data.get('last_name')
-        un = request.data.get('user_name')
-        em = request.data.get('email')
-        pn = request.data.get('phone_number')
-        pwd = request.data.get('password')
-        gen = request.data.get('gender')
+        try:
+            fn = request.data.get('first_name')
+            ln = request.data.get('last_name')
+            un = request.data.get('user_name')
+            em = request.data.get('email')
+            pn = request.data.get('phone_number')
+            pwd = request.data.get('password')
+            gen = request.data.get('gender')
 
-        a = Register.objects.create(first_name = fn,last_name = ln,user_name =un,email = em,phone_number = pn,password = pwd,gender = gen)
-        return Response('registered successfully')
+            a = Register.objects.create(first_name = fn,last_name = ln,user_name =un,email = em,phone_number = pn,password = pwd,gender = gen)
+            return Response('registered successfully')
+        except IntegrityError as e:
+            return Response(str(e))
 
     def get(self,request):
         return Response('not allowed ......')
@@ -214,18 +217,25 @@ def post_data_into_temp(request):
 #         return Response('Task data not provided')
 
 # here we add task by particular user when login with right crdentials
-@api_view(['post'])
+# @api_view(['post'])
 def add_task(request,id):
-    user = Register.objects.get(id = id)
-    task = request.data.get('task')
-    user1 = registerSerializer(user)
-    parsed_data =user1.data
-    # res_data = json.loads(parsed_data)    
-    # Create the Task instance associated with the user
-    task = tasks.objects.create(user_id=parsed_data.get('id'), task=task)
-        # Redirect to a success page or task list page
-    # return redirect('task_list')
-    return Response('task added sucessfull')
+    if request.method == "POST" or 'get':
+        user = Register.objects.get(id = id)
+        task = request.POST.get('task')
+        user1 = registerSerializer(user)
+        parsed_data =user1.data
+        if task:
+        # res_data = json.loads(parsed_data)    
+        # Create the Task instance associated with the user
+            task = tasks.objects.create(user_id=parsed_data.get('id'), task=task)
+        task1_viewer = tasks.objects.filter(user_id = id)
+                # Rdirect to a success page or task list page
+            # return redirect('task_list')
+        return render(request,"task.html",{"id":task1_viewer})
+        
+    
+    # else:
+    #     return Response("task page fails")
 
 
 class ParentToChildView(APIView):
@@ -273,3 +283,14 @@ def upload_file(request):
     file = request.FILES.get('file')
     upload_instance = file_upload.objects.create(file = file)
     return render(request,'file.html')
+
+
+def task_html(request):
+    return render(request,"task.html")
+
+class serializer_test(APIView):
+    def post(self,request):
+        b = request.data.get("user")
+        a = Register.objects.get(user_name = b)
+        a1 = registerSerializer(a)
+        return Response(a1.data)

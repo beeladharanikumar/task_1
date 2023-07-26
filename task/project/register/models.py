@@ -3,9 +3,9 @@ import datetime
 class Register(models.Model):
     first_name = models.CharField(max_length=30,null=True,default='')
     last_name = models.CharField(max_length=30,null=True,default='')
-    user_name = models.CharField(max_length=20,null=True,blank=False,default='')
-    email = models.EmailField(null=True,default='')
-    phone_number = models.CharField(max_length=12,null=True,blank=False,default='')
+    user_name = models.CharField(max_length=20,null=True,blank=False,default='',unique=True)
+    email = models.EmailField(null=True,default='',unique = True)
+    phone_number = models.CharField(max_length=12,null=True,blank=False,default='',unique=True)
     password = models.CharField(max_length=18,null=True,blank=False,default='')
     gender_choice = [
         ('male','male'),

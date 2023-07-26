@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>task</title>
+</head>
+<body>
+  <form method = "post" enctype="multipart/form-data">
+  <label for="task" >ADD TASK</label>
+  <input type="text" name = task placeholder="enter task here" required>
+  <input type="submit" name = add_task value = add> 
+  <h2>Tasks</h2>
+  {% for item in id %}
+  <h3>{{item.task}}</h3>
+  {% endfor %}
+  {% include 'file.html' %}
+  </form>
+
+</body>
+</html>
