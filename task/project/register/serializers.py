@@ -10,7 +10,7 @@ class tempserializer(serializers.ModelSerializer):
 class registerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Register
-        fields = ['id','first_name','last_name','email']
+        fields = ['id','first_name','last_name','email','phone_number']
 
 class taskSerializer(serializers.ModelSerializer):    
     class Meta:
@@ -33,3 +33,8 @@ class ChildModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChildModel
         fields = '__all__'
+
+class chatserializer(serializers.ModelSerializer):
+    class Meta:
+        model=chat
+        fileds ='__all__'

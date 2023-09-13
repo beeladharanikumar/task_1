@@ -1,15 +1,17 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .models import Register,Login,temp,tasks
+from .models import *
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import serializers,status
 from django.shortcuts import get_object_or_404,redirect
+from django.conf import settings
 from .serializers import *
 from django.db import IntegrityError
 import json
+from django.core.mail import send_mail
 
 # Create your views here.
 
@@ -227,7 +229,7 @@ def add_task(request,id):
         if task:
         # res_data = json.loads(parsed_data)    
         # Create the Task instance associated with the user
-            task = tasks.objects.create(user_id=parsed_data.get('id'), task=task)
+            task = tasks.objects.create(user_id=id, task=task)
         task1_viewer = tasks.objects.filter(user_id = id)
                 # Rdirect to a success page or task list page
             # return redirect('task_list')
@@ -292,5 +294,56 @@ class serializer_test(APIView):
     def post(self,request):
         b = request.data.get("user")
         a = Register.objects.get(user_name = b)
-        a1 = registerSerializer(a)
-        return Response(a1.data)
+        a1 = registerSerializer(a).data
+
+        return Response(a1.get('id'))
+    
+class gmail(APIView):
+    def post(self,request):
+        user_email = request.data.get('email')
+        rec_email = [user_email,]
+        sender_mail = settings.EMAIL_HOST_USER
+        a = send_mail('kumars project' ,'thanks fro register to my website',sender_mail,rec_email)
+        return Response(a)
+    
+@api_view(['post' or 'get'])
+def Chat(request):
+        to_msg = request.data.get('number')
+        # return HttpResponse(to_msg)
+        receiver = Register.objects.get(phone_number = to_msg)
+        receiver_id = registerSerializer(receiver).data
+        return redirect ('chat_message',id = receiver_id.get('id'))
+        # return render(request,'chat.html')
+
+@api_view(['post' or 'get' or 'put'])
+def chat_message(request,id):
+    id_check  = chat.objects.filter(person2 = id)
+    send_message =  request.data.get('message')
+    if id_check.exists():
+        a = get_object_or_404(chat,person2 = id)
+        a.p1_msg = send_message
+        a.save()
+        res_data ={
+            "data1" : a.p1_msg,
+            "data2" : a.p2_msg
+        }
+        return Response(res_data)
+        
+    else:
+        
+        a1= chat.objects.create(person1 = 100,person2=id,p1_msg = send_message,p2_msg = '')
+        # a = chat.objects.filter(id = a1)
+        # res=a
+        # res = chatserializer(a.id).data
+        # return Response(res.get('id'))
+        return redirect('chat_message',id)
+
+# def chat(request):
+#         if request.method =='post' or 'get':
+#             to_msg = request.POST.get('phone_number')
+#             # return HttpResponse(to_msg)
+#             receiver = Register.objects.filter(phone_number = to_msg)
+#             receiver_id = registerSerializer(receiver).data
+#             return render(request,'chat.html')
+        
+

@@ -7,9 +7,12 @@
 </head>
 <body>
   <form method = "post" enctype="multipart/form-data">
+  <div>
   <label for="task" >ADD TASK</label>
   <input type="text" name = task placeholder="enter task here" required>
   <input type="submit" name = add_task value = add> 
+</div>
+  
   <h2>Tasks</h2>
   {% for item in id %}
   <h3>{{item.task}}</h3>

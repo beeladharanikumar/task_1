@@ -42,3 +42,10 @@ class ChildModel(models.Model):
 class file_upload(models.Model):
     file = models.FileField(upload_to="C:/Users/bdharani/Desktop/task/project/register/uploaded_files")
     file_time = models.DateTimeField(default=datetime.datetime.now())
+
+
+class chat(models.Model):
+    person1 = models.CharField(max_length=30,null=True)
+    person2 = models.CharField(max_length=30,null=True)
+    p1_msg  = models.TextField(max_length=100,null=True)
+    p2_msg = models.TextField(max_length=100,null=True)

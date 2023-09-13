@@ -17,6 +17,8 @@ urlpatterns = [
     path("relation/",views.ParentToChildView.as_view(),name= 'relation'),
     path('relation1/',views.childtoparentview.as_view(),name = 'relation1'),
     path('file_upload/',views.upload_file,name = 'file-upload'),
-    path("seraializer_test/",views.serializer_test.as_view(),name ="s_test")
-    
+    path("seraializer_test/",views.serializer_test.as_view(),name ="s_test"),
+    path("email/",views.gmail.as_view(),name = 'email-sent'),
+    path('chat/',views.Chat,name ='chat_msg'),
+    path("message/<int:id>/",views.chat_message,name = 'chat_message'),
 ]
